@@ -1,22 +1,50 @@
+import { SAMPLE_DATASETS } from './presets';
+
 export const officerStats = { inspections: 128, compliant: 94, nonCompliant: 34, violations: 61, reports: 117 };
 
-export const recentInspections = [
-  { id: 'VL-MUM-0421', sampleId: 'sample1', product: 'Rajkamal Navratan Mix', time: '20 Sep 2026 - 11:20', status: 'NON-COMPLIANT', violation: 'Dual MRP / missing USP', officer: 'LM-MH-042', report: true },
-  { id: 'VL-MUM-0419', sampleId: 'sample2', product: 'PureSpring Mineral Water', time: '20 Sep 2026 - 10:05', status: 'COMPLIANT', violation: 'None detected', officer: 'LM-MH-042', report: true },
-  { id: 'VL-MUM-0416', sampleId: 'sample3', product: 'NeemAyur Bath Soap', time: '19 Sep 2026 - 16:42', status: 'NON-COMPLIANT', violation: 'USP / date legibility', officer: 'LM-MH-039', report: true },
-  { id: 'VL-MUM-0411', sampleId: 'sample4', product: 'GoldenHarvest Rice', time: '19 Sep 2026 - 13:18', status: 'NON-COMPLIANT', violation: 'Numeral height', officer: 'LM-MH-042', report: true }
-];
+// The dashboard deliberately reuses scanner fixtures. Keep this list at four so every
+// dashboard collection has the same bounded inspection scope (three flagged, one pass).
+const dashboardSampleIds = ['sample1', 'sample2', 'sample3', 'sample6'];
+const dashboardSamples = dashboardSampleIds.map((id) => {
+  const sample = SAMPLE_DATASETS.find((dataset) => dataset.id === id);
+  if (!sample) throw new Error(`Dashboard sample fixture not found: ${id}`);
+  return sample;
+});
 
-export const violationRecords = [
-  { product: 'Rajkamal Navratan Mix', issue: 'Dual MRP declaration', rule: 'PCR 2011 Rule 18(2)', status: 'Open' },
-  { product: 'NeemAyur Bath Soap', issue: 'Missing Unit Sale Price', rule: 'PCR 2011 Rule 6(11)', status: 'Review' },
-  { product: 'GoldenHarvest Rice', issue: 'Net quantity numeral height', rule: 'PCR 2011 Rule 7 / Table I', status: 'Open' }
-];
+const statusFor = (status: string) => status === 'COMPLIANT' ? 'COMPLIANT' : 'NON-COMPLIANT';
+const primaryRuleFor = (sample: typeof dashboardSamples[number]) =>
+  sample.violations[0]?.rule ?? sample.changeLog[0]?.statutoryReference ?? sample.boundingBoxes[0]?.ruleCode ?? 'Not applicable';
+const primaryIssueFor = (sample: typeof dashboardSamples[number]) =>
+  sample.violations[0]?.code ?? 'No Statutory Violations Detected';
 
-export const penaltyRecords = [
-  { product: 'Rajkamal Navratan Mix', issue: 'Dual MRP declaration', amount: 'INR 5,000 (demo)', status: 'Pending source review' },
-  { product: 'NeemAyur Bath Soap', issue: 'Missing USP', amount: 'INR 2,000 (demo)', status: 'Prototype tracking' }
-];
+export const recentInspections = dashboardSamples.map((sample) => ({
+  id: sample.caseReference ?? sample.id,
+  sampleId: sample.id,
+  product: sample.name,
+  time: sample.inspectionDateTime ?? 'Date/time not recorded',
+  status: statusFor(sample.defaultStatus),
+  violation: sample.violations.length ? sample.violations.map((violation) => violation.code).join(' / ') : 'None detected',
+  officer: 'LM-MH-042',
+  report: true
+}));
+
+export const violationRecords = dashboardSamples.map((sample) => ({
+  product: sample.name,
+  issue: primaryIssueFor(sample),
+  rule: primaryRuleFor(sample),
+  status: sample.defaultStatus === 'COMPLIANT' ? 'Compliant' : 'Open'
+}));
+
+// A penalty card represents an actual fixture violation, rather than a separate mock
+// product record. The first four retain the dashboard's four-card cap.
+export const penaltyRecords = dashboardSamples
+  .flatMap((sample) => sample.violations.map((violation) => ({
+    product: sample.name,
+    issue: violation.code,
+    amount: '₹0.00 (prototype)',
+    status: `${violation.severity} violation`
+  })))
+  .slice(0, 4);
 
 export const repeatedOffenders = [
   { entity: 'Sample seller record A', count: 4, recent: 'Dual MRP declaration', status: 'Monitor' },
@@ -24,7 +52,11 @@ export const repeatedOffenders = [
   { entity: 'Sample seller record C', count: 2, recent: 'Date legibility', status: 'Open' }
 ];
 
-export const evidenceRecords = [
-  { id: 'EV-MUM-0421', product: 'Rajkamal Navratan Mix', location: 'Mumbai, Maharashtra', timestamp: '20 Sep 2026 - 11:20', rule: 'PCR 2011 Rule 18(2)', hash: 'sha256: prototype-reference-0421' },
-  { id: 'EV-MUM-0416', product: 'NeemAyur Bath Soap', location: 'Mumbai, Maharashtra', timestamp: '19 Sep 2026 - 16:42', rule: 'PCR 2011 Rule 6(11)', hash: 'sha256: prototype-reference-0416' }
-];
+export const evidenceRecords = dashboardSamples.map((sample) => ({
+  id: `EV-${sample.caseReference ?? sample.id}`,
+  product: sample.name,
+  location: sample.inspectionLocation ?? 'Location not recorded',
+  timestamp: sample.inspectionDateTime ?? 'Date/time not recorded',
+  rule: primaryRuleFor(sample),
+  hash: `sha256: ${sample.id}`
+}));

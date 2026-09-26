@@ -44,7 +44,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         <div className="relative w-full overflow-hidden rounded-2xl border border-[#c3c6d7]/30 bg-slate-900 shadow-xs aspect-video">
           <video
             className="h-full w-full object-cover"
-            src="/assets/video_VeriLabel.mp4"
+            src="/assets/Video_VeriLabel.mp4"
             autoPlay
             loop
             muted

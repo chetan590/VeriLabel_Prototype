@@ -1,6 +1,8 @@
 {
   "id": "sample1",
   "caseReference": "VL-SAMPLE2-0621",
+  "inspectionDateTime": "20 Sep 2026 - 11:20",
+  "inspectionLocation": "Mumbai, Maharashtra",
   "name": "Unidentified Tube Product (Partial Label View)",
   "category": "Unspecified / Tube-packaged commodity",
   "netQuantity": "Not visible in captured frame",

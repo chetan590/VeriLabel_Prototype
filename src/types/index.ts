@@ -41,6 +41,8 @@ export interface ChangeLogItem {
 export interface SampleDataset {
   id: string;
   caseReference?: string;
+  inspectionDateTime?: string;
+  inspectionLocation?: string;
   name: string;
   category: string;
   netQuantity: string;
