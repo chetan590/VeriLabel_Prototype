@@ -20,7 +20,7 @@ src/main.tsx
      │        ├─ Header + GlobalControls
      │        ├─ OverviewTab
      │        ├─ ScannerTab
-     │        │  ├─ PhotosGrid / ActionSheet
+     │        │  ├─ PhotosGrid
      │        │  ├─ simulated PipelineStepper
      │        │  ├─ BoundingBoxOverlay
      │        │  └─ ResultsPanel
@@ -106,14 +106,12 @@ Each `SampleDataset` contains:
 
 - Product labels: `public/assets/labels/product-1.jpeg` through `product-6.jpeg`.
 - Team portraits: `public/assets/team/`.
-- Logo and seal: `public/assets/verilabel-logo.PNG`, `public/assets/official_seal.png`.
-- Homepage video: `public/assets/video_VeriLabel.mp4`.
+- Logo: `public/assets/verilabel-logo.PNG`.
+- Homepage video: `public/assets/Video_VeriLabel.mp4`.
 - Devanagari font asset: `public/fonts/NotoSansDevanagari-Regular.ttf`.
 - PDF: `jspdf`.
 - UI icons: `lucide-react`.
 - Confetti success cue: `canvas-confetti`.
-- Image capture/render support dependency: `html2canvas`.
-- OCR dependency present in the package manifest: `tesseract.js`; not connected to the current visible scan path.
 
 ## 9. Extension points
 

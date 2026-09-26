@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { SAMPLE_DATASETS } from '../data/presets';
 import { SampleDataset } from '../types';
-import { ActionSheet } from './ActionSheet';
 import { PhotosGrid } from './PhotosGrid';
 import { BoundingBoxOverlay } from './BoundingBoxOverlay';
 import { PipelineStepper } from './PipelineStepper';
@@ -20,7 +19,6 @@ export const ScannerTab: React.FC = () => {
   const { t, language } = useI18n();
   const [activeSample, setActiveSample] = useState<SampleDataset | null>(null);
   const [hasProcessed, setHasProcessed] = useState<boolean>(false);
-  const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
   const [isPhotosGridOpen, setIsPhotosGridOpen] = useState<boolean>(false);
 
   // Simulated Scanning & Pipeline State
@@ -259,16 +257,6 @@ export const ScannerTab: React.FC = () => {
           </div>
         </>
       )}
-
-      {/* Action Sheet Modal (Kept for fallback, containing only Choose from Library) */}
-      <ActionSheet
-        isOpen={isActionSheetOpen}
-        onClose={() => setIsActionSheetOpen(false)}
-        onChooseLibrary={() => {
-          setIsActionSheetOpen(false);
-          setTimeout(() => setIsPhotosGridOpen(true), 200);
-        }}
-      />
 
       {/* Native iOS Photos Grid Picker */}
       <PhotosGrid

@@ -24,7 +24,6 @@ export const recentInspections = dashboardSamples.map((sample) => ({
   time: sample.inspectionDateTime ?? 'Date/time not recorded',
   status: statusFor(sample.defaultStatus),
   violation: sample.violations.length ? sample.violations.map((violation) => violation.code).join(' / ') : 'None detected',
-  officer: 'LM-MH-042',
   report: true
 }));
 
